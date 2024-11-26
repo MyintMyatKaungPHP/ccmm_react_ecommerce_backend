@@ -14,10 +14,16 @@ class ProductController extends Controller
     use ErrorJsonChanger;
     public function index()
     {
-        $products = Product::with('category', 'images')->get();
+        $products = Product::with('category', 'images')
+            ->where('name', "like", "%" . request('name') . "%")
+            ->get();
 
+        $productsByCategory = Product::with('category', 'images')
+            ->where('category_id', request('category_id'))
+            ->get();
         return response()->json([
-            'products' => $products
+            'products' => $products,
+            'productsByCategory' => $productsByCategory
         ]);
     }
 
